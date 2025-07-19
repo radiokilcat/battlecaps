@@ -1,0 +1,7 @@
+; Engine configuration file
+; WARNING: Changing this file manually is not advised.
+[gd_resource type="ConfigFile" format=3]
+
+[application]
+config/name="Battlecaps"
+run/main_scene="res://scenes/Main.tscn"
