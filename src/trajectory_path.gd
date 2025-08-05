@@ -1,15 +1,20 @@
 extends MeshInstance3D
 
 ## Draws a line indicating the predicted path of a falling cap.
-## Call [method show_path] with the start and end positions to
-## display the line; it will animate its length from the start
-## point toward the end point.
+## Call [method show_path] to display an animated line from ``start``
+## toward ``end``. Calling [method update_path] moves the line
+## smoothly as the cap or target position changes.
 
 @export var line_color: Color = Color.RED
 @export var duration: float = 0.2
 
 var _mesh := ImmediateMesh.new()
 var _material := StandardMaterial3D.new()
+
+var _start: Vector3 = Vector3.ZERO
+var _end: Vector3 = Vector3.ZERO
+var _target_start: Vector3 = Vector3.ZERO
+var _target_end: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
     _material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -20,34 +25,32 @@ func _ready() -> void:
     material_override = _material
     visible = false
 
-func show_path(start: Vector3, end: Vector3) -> void:
-    # Prepare tween to animate line growth
-    visible = true
-    var direction: Vector3 = end - start
-    var length: float = direction.length()
-    if length <= 0.0:
-        hide()
+func _process(delta: float) -> void:
+    if not visible:
         return
-    direction = direction.normalized()
+    var t := min(1.0, delta / duration)
+    _start = _start.lerp(_target_start, t)
+    _end = _end.lerp(_target_end, t)
+    _update_mesh()
 
-    var tween := create_tween()
-    tween.tween_method(_update_line.bind(start, direction), 0.0, length, duration)
+func show_path(start: Vector3, end: Vector3) -> void:
+    _start = start
+    _end = start
+    _target_start = start
+    _target_end = end
+    visible = true
 
 func update_path(start: Vector3, end: Vector3) -> void:
-    """Instantly draws a line from ``start`` to ``end`` without animation."""
-    var direction: Vector3 = end - start
-    var length: float = direction.length()
-    if length <= 0.0:
+    _target_start = start
+    _target_end = end
+
+func _update_mesh() -> void:
+    if _start.distance_to(_end) <= 0.0:
         hide()
         return
-    direction = direction.normalized()
     visible = true
-    _update_line(start, direction, length)
-
-func _update_line(start: Vector3, dir: Vector3, current_length: float) -> void:
-    var end_point := start + dir * current_length
     _mesh.clear_surfaces()
     _mesh.surface_begin(Mesh.PRIMITIVE_LINES)
-    _mesh.surface_add_vertex(start)
-    _mesh.surface_add_vertex(end_point)
+    _mesh.surface_add_vertex(_start)
+    _mesh.surface_add_vertex(_end)
     _mesh.surface_end()
