@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dephohgndinyl"]
+
+[ext_resource type="Texture2D" uid="uid://5gijevos1wx4" path="res://assets/ce48d545-666d-426d-a1e9-47fcb0579955.png" id="1_uhqni"]
+
+[node name="Bat" type="Node2D"]
+
+[node name="Ce48d545-666d-426d-a1e9-47Fcb0579955" type="Sprite2D" parent="."]
+position = Vector2(238.5, 484.5)
+scale = Vector2(0.217773, 0.186523)
+texture = ExtResource("1_uhqni")

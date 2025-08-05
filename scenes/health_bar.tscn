@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3mbkv724wnmf"]
+
+[ext_resource type="Texture2D" uid="uid://f7yjkvgyfu3e" path="res://assets/pngtree-remaining-life-png-image_6110935.png" id="1_1bvlm"]
+
+[node name="HealthBar" type="Node2D"]
+
+[node name="Pngtree-remaining-life-png-image6110935" type="Sprite2D" parent="."]
+position = Vector2(82, 126.5)
+scale = Vector2(0.7, 0.680556)
+texture = ExtResource("1_1bvlm")

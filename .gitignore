@@ -1,0 +1,40 @@
+# Godot-specific
+.import/
+export.cfg
+export_presets.cfg
+
+# Godot 4-specific (also works for 3.x)
+.godot/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs (Rider, CLion, etc.)
+.idea/
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar.gz
+*.log
+
+# Mono-specific (if using C#)
+.mono/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.mdb
+*.pdb
+*.dll
+
+# Godot cache files
+*.import
