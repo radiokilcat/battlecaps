@@ -14,6 +14,7 @@ extends Node3D
 @onready var label_down := $CanvasLayer/sumDown
 @onready var flash := $CanvasLayer/WhiteFlash
 @onready var centerText := $CanvasLayer/CenterText
+@onready var trajectory_path := $TrajectoryPath/MeshInstance3D
 
 
 var rng = RandomNumberGenerator.new()
@@ -131,28 +132,27 @@ func drop_cap_straight_down():
 	# Пересекаем с плоскостью пола (Y=0)
 	var plane = Plane(Vector3.UP, 0)
 	var hit_pos = plane.intersects_ray(ray_origin, ray_direction)
-
 	if hit_pos != null:
 		var cap_instance = cap_scene.instantiate()
 		PhysicsServer3D.body_set_enable_continuous_collision_detection(cap_instance, true)
 
 		# Появляется над целевой точкой (высоту можно менять)
 		var spawn_height = 4.0
-		cap_instance.position = hit_pos + Vector3.UP * spawn_height
+		var start_pos = hit_pos + Vector3.UP * spawn_height
+		cap_instance.position = start_pos
+
+		trajectory_path.show_path(start_pos, hit_pos)
 
 		caps_container.add_child(cap_instance)
 		await get_tree().process_frame
 
-		# # Прямой импульс строго вниз
-		# var impulse = Vector3(0, -10 * bat_impulse, 0)
-		# cap_instance.apply_impulse(Vector3.ZERO, impulse)
 		cap_instance.gravity_scale = 2.0
 
 		# Немного вращения для реалистичности (опционально)
 		# var torque = Vector3(
-		# 	rng.randf_range(-2.0, 2.0),
-		# 	rng.randf_range(-4.0, 4.0),
-		# 	rng.randf_range(-2.0, 2.0)
+		#       rng.randf_range(-2.0, 2.0),
+		#       rng.randf_range(-4.0, 4.0),
+		#       rng.randf_range(-2.0, 2.0)
 		# )
 		var torque = Vector3(1, 2, 1)
 		cap_instance.apply_torque_impulse(torque)
