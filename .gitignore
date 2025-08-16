@@ -26,6 +26,9 @@ desktop.ini
 *.tar.gz
 *.log
 
+*.uid
+*.tmp
+
 # Mono-specific (if using C#)
 .mono/
 *.csproj
@@ -38,3 +41,4 @@ desktop.ini
 
 # Godot cache files
 *.import
+
