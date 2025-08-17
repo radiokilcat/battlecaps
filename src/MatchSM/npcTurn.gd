@@ -4,7 +4,6 @@ func _enter(_data = {}):
 	var score := $"../../ScoreManager"
 	score.begin_turn("NPC")
 	var turn_sm: Node = $"../../TurnSM"
-	turn_sm.visible = true
 	turn_sm.set_process(true)
 	turn_sm.set_process_input(true)
 	turn_sm.call("set_controller", $"../../NpcController")
