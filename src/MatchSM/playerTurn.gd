@@ -20,14 +20,12 @@ func _ready() -> void:
 	player_controller = get_node_or_null(player_controller_path)
 	score = get_node_or_null(score_manager_path) as ScoreManager
 
-	# 2) Резервные способы поиска (если что-то не задано)
 	turn_sm = (turn_sm if turn_sm else ($"../../TurnSM" as TurnSM))
 	turn_sm = (turn_sm if turn_sm else (get_tree().get_first_node_in_group("turn_sm") as TurnSM))
 
 	player_controller = player_controller if player_controller else $"../../PlayerController"
 	score = (score if score else ($"../../ScoreManager" as ScoreManager))
 
-	# Быстрая диагностика (раскомментируй при необходимости)
 	# print("PlayerTurnState: turn_sm=", turn_sm, " controller=", player_controller, " score=", score)
 
 func _enter(_data := {}) -> void:
@@ -46,6 +44,7 @@ func _enter(_data := {}) -> void:
 	turn_sm.set_process(true)
 	turn_sm.set_process_input(true)
 	turn_sm.set_controller(player_controller)
+	turn_sm.transition_to(turn_sm.start_state)
 
 	if not _connected_once and turn_sm.has_signal("turn_finished"):
 		turn_sm.turn_finished.connect(_on_turn_finished, CONNECT_ONE_SHOT)
