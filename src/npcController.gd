@@ -8,8 +8,14 @@ func _get_active_cap() -> RigidBody3D: return active_cap
 func get_aim_dir() -> Vector3: return aim_dir
 func get_power() -> float: return power
 
-func begin_aim_power() -> void:
-	# простая логика — в сторону ближайшей капсы из группы "caps"
+func arm_to_start() -> void:
+	if active_cap == null: return
+	if active_cap.has_method("reset_to_start"):
+		active_cap.reset_to_start()
+	if active_cap.has_method("set_active"):
+		active_cap.set_active()
+
+func start_charge() -> void:
 	var best := _pick_target_dir()
 	aim_dir = best
 	power = 0.6
@@ -19,7 +25,7 @@ func aim_power_input(_e) -> bool:
 
 func shoot() -> void:
 	if not active_cap: return
-	active_cap.apply_impulse(aim_dir.normalized() * lerp(3.0, 12.0, power))
+	# active_cap.apply_impulse(aim_dir.normalized() * lerp(3.0, 12.0, power))
 
 func _pick_target_dir() -> Vector3:
 	var caps = get_tree().get_nodes_in_group("caps")

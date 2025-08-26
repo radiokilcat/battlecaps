@@ -8,34 +8,42 @@ var _confirmed := false
 
 func _enter(_data := {}) -> void:
 	_confirmed = false
+	if sm.controller and sm.controller.has_method("arm_to_start"):
+		sm.controller.arm_to_start()
+
+	if sm.controller and sm.controller.has_method("start_charge"):
+		sm.controller.start_charge()
+
 	if "ui_arrow" in sm and sm.ui_arrow: sm.ui_arrow.visible = true
 	if "ui_power" in sm and sm.ui_power: sm.ui_power.visible = true
 
-	# Сообщаем контроллеру, что началась комбинированная фаза
-	if "controller" in sm and sm.controller and sm.controller.has_method("begin_aim_power"):
-		sm.controller.begin_aim_power()
 
 	_update_ui()
 
 func _exit() -> void:
 	# UI прячется в Shoot
+	if sm.controller and sm.controller.has_method("cancel_charge"):
+		sm.controller.cancel_charge()
 	pass
 
 func _input_state(event: InputEvent) -> void:
-	if not ("controller" in sm) or not sm.controller:
+	if not sm.controller:
 		return
 
-	# Передаём событие контроллеру. Он обновляет aim_dir и power.
-	if sm.controller.has_method("aim_power_input"):
-		var done: bool = sm.controller.aim_power_input(event)
-		if done and not _confirmed:
-			_confirmed = true
-			emit_signal("request_transition", "Shoot")
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			sm.controller.start_charge()
+		else:
+			sm.controller.shoot()
+			sm.transition_to("Shoot")
 
 func _process_state(_delta: float) -> void:
+	# if _charging:
+	# 	_charge_t = clampf(_charge_t + delta, 0.0, max_charge_time)
+	# 	var power := _charge_t / max_charge_time
+	# 	_emit_power_ui(power)
+	# 	_update_aim_dir()
 	_update_ui()
-
-# --------- helpers ----------
 
 func _active_cap() -> Node:
 	if sm.controller and sm.controller.has_method("_get_active_cap"):
@@ -63,14 +71,13 @@ func _update_ui() -> void:
 
 	# Обновление стрелки/траектории (длина/прозрачность ~ силе)
 	if "ui_arrow" in sm and sm.ui_arrow:
-		if sm.ui_arrow.has_method("set_from"):            # предпочтительный контракт
+		if sm.ui_arrow.has_method("set_from"):
 			sm.ui_arrow.set_from(start, dir, p)
 		elif sm.ui_arrow.has_method("update_from"):
 			sm.ui_arrow.update_from(start, dir, p)
 		elif sm.ui_arrow is Node3D:
 			sm.ui_arrow.global_position = start
 			sm.ui_arrow.look_at(start + dir, Vector3.UP)
-			# опционально масштаб по оси вперёд, если модель стрелки вытянута вдоль Z
 			if ("scale" in sm.ui_arrow):
 				var s = sm.ui_arrow.scale
 				sm.ui_arrow.scale = Vector3(s.x, s.y, lerp(0.5, 2.5, p))

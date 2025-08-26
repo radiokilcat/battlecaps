@@ -22,7 +22,6 @@ extends Node3D
 @onready var turn_sm = $TurnSM
 @onready var player_controller = $PlayerController
 @onready var npc_controller = $NpcController
-@onready var active_cap = $BitCap
 
 var rng = RandomNumberGenerator.new()
 var up_count = 0
@@ -38,16 +37,13 @@ func _ready():
 	# stackCapsButton.pressed.connect(stack_caps_1)
 	# mode_1_button.pressed.connect(run_mode_1)
 	# impulseSlider.connect("value_changed", Callable(self, "_on_slider_value_changed"))
-	player_controller.active_cap = active_cap
-	npc_controller.active_cap = active_cap
-
 	# В TurnSM пока никого не ставим, контроллер назначается состояниями PlayerTurn/NpcTurn
 	# Запускаем матч
 	match_sm.transition_to("Init")
 
 
 func flash_and_show_text(text: String) -> void:
-	# flash.modulate.a = 1.0
+# flash.modulate.a = 1.0
 	# flash.visible = true
 	centerText.text = text
 	centerText.visible = true
@@ -301,13 +297,3 @@ func flash_and_show_text(text: String) -> void:
 
 # 		await wait_until_caps_stop()
 # 		count_fallen()
-
-
-
-# func run_mode_1():
-# 	throw_bat = true
-# 	await(flash_and_show_text("Run Mode 1"))
-# 	stack_caps_1()
-# func run_mode_2():
-# func run_mode_3():
-# func run_mode_4():
