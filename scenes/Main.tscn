@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://gxm4bjrw15kx"]
+[gd_scene load_steps=24 format=3 uid="uid://gxm4bjrw15kx"]
 
 [ext_resource type="Script" uid="uid://4m66l8i857h3" path="res://src/main.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://bnnsu1kcro0jt" path="res://src/trajectory_path.gd" id="2_0wfyh"]
@@ -18,7 +18,8 @@
 [ext_resource type="Script" uid="uid://cudhhlmuluhij" path="res://src/npcController.gd" id="14_fs0b5"]
 [ext_resource type="Script" uid="uid://dan2edwxh8ktg" path="res://src/physicsManager.gd" id="15_ma7h6"]
 [ext_resource type="Script" uid="uid://cnqdwimmwf3c5" path="res://src/scoreManager.gd" id="16_e2s0e"]
-[ext_resource type="PackedScene" uid="uid://lyfk6iegw54e" path="res://scenes/cap.tscn" id="17_ft6cd"]
+[ext_resource type="PackedScene" uid="uid://sao6npr02rqe" path="res://scenes/slammer.tscn" id="19_nfivy"]
+[ext_resource type="Script" uid="uid://o5jfayph4smt" path="res://src/slam.gd" id="20_1nqs0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5qli"]
 albedo_color = Color(0.266667, 0.517647, 0.376471, 1)
@@ -34,14 +35,16 @@ font_color = Color(0.553314, 0.191026, 0, 1)
 script = ExtResource("1_0wfyh")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, 0, 9.71932, 7.88425)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 19, 19)
 projection = 1
-size = 7.667
+current = true
+size = 9.476
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.483817, 0.875169, 0, -0.875169, 0.483817, 0, 11.1758, 0)
 
 [node name="floor" type="StaticBody3D" parent="."]
+collision_layer = 2
 
 [node name="CSGBox3D" type="CSGBox3D" parent="floor"]
 size = Vector3(15.9531, 1, 16.0889)
@@ -187,11 +190,12 @@ script = ExtResource("12_xa025")
 
 [node name="PlayerController" type="Node" parent="." node_paths=PackedStringArray("active_cap")]
 script = ExtResource("13_36rkl")
-active_cap = NodePath("../BitCap")
+active_cap = NodePath("../PlayerSlamCap")
 camera_3d_path = NodePath("../Camera3D")
 
-[node name="NpcController" type="Node" parent="."]
+[node name="NpcController" type="Node" parent="." node_paths=PackedStringArray("active_cap")]
 script = ExtResource("14_fs0b5")
+active_cap = NodePath("../NpcSlamCap")
 
 [node name="PhysicsManager" type="Node" parent="."]
 script = ExtResource("15_ma7h6")
@@ -199,4 +203,18 @@ script = ExtResource("15_ma7h6")
 [node name="ScoreManager" type="Node" parent="."]
 script = ExtResource("16_e2s0e")
 
-[node name="BitCap" parent="." instance=ExtResource("17_ft6cd")]
+[node name="PlayerSlamCap" parent="." instance=ExtResource("19_nfivy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+script = ExtResource("20_1nqs0")
+use_editor_start = true
+start_xform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+lift_mm = 2.0
+hide_when_inactive = true
+
+[node name="NpcSlamCap" parent="." instance=ExtResource("19_nfivy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1303, 0)
+script = ExtResource("20_1nqs0")
+use_editor_start = true
+start_xform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+lift_mm = 2.0
+hide_when_inactive = true

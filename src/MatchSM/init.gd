@@ -17,7 +17,7 @@ extends StateBase
 @onready var turn_sm: Node           = $"../../TurnSM"
 @onready var player_controller: Node = $"../../PlayerController"
 @onready var npc_controller: Node    = $"../../NpcController"
-@onready var active_cap: Node        = $"../../BitCap"
+@onready var active_cap: Node        = $"../../PlayerSlamCap"
 
 func stack_caps():
 	var cap_count = caps_stack_size
@@ -55,7 +55,6 @@ func _reset_active_cap() -> void:
 
 
 func _enter(_data := {}) -> void:
-	# Выключаем TurnSM на время подготовки
 	if turn_sm:
 		turn_sm.set_process(false)
 		turn_sm.set_process_input(false)

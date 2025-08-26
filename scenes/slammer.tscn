@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://sao6npr02rqe"]
+
+[ext_resource type="Script" uid="uid://ce7jdxiyqt06n" path="res://src/cap.gd" id="1_60eae"]
+[ext_resource type="Shader" uid="uid://bwgoi24o3fgyb" path="res://shaders/capOutline.gdshader" id="1_qp5bv"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rew06"]
+height = 0.08
+radius = 0.52
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_60eae"]
+albedo_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3nnse"]
+material = SubResource("StandardMaterial3D_60eae")
+height = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sd645"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qp5bv"]
+height = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_60eae"]
+render_priority = 0
+shader = ExtResource("1_qp5bv")
+
+[node name="Slammer" type="RigidBody3D"]
+collision_mask = 3
+script = ExtResource("1_60eae")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_rew06")
+
+[node name="CapBody" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_3nnse")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_sd645")
+
+[node name="CapOutline" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_qp5bv")
+surface_material_override/0 = SubResource("ShaderMaterial_60eae")
