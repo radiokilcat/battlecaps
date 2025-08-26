@@ -1,0 +1,42 @@
+version: 1
+purpose: "Godot caps game; FSM-driven turn-based architecture."
+
+entities:
+  MatchSM: {type: StateMachine, states: [Init, PlayerTurn, NpcTurn, CheckWin, End]}
+  TurnSM:  {type: StateMachine, states: [AimPower, Shoot, WaitStop, Resolve]}
+  PlayerController: {fields: [active_cap, aim_dir, power]}
+  NpcController:    {fields: [active_cap, aim_dir, power]}
+  ScoreManager:     {signals: [score_changed, game_over, round_changed]}
+  PhysicsWatcher:   {api: [start_watch, all_caps_stopped]}
+  UI: {Arrow: Node3D, PowerBar: Control}
+  ActiveCap: {type: RigidBody3D}
+  Caps: {group: "caps"}
+
+edges:
+  MatchSM: 
+    - Init -> PlayerTurn
+    - PlayerTurn -> NpcTurn
+    - NpcTurn -> CheckWin
+    - CheckWin -> End (if is_game_over)
+    - CheckWin -> PlayerTurn/NpcTurn (alternate)
+  TurnSM:
+    - AimPower -> Shoot
+    - Shoot -> WaitStop
+    - WaitStop -> Resolve
+    - Resolve -> (emit TurnSM.turn_finished)
+
+contracts:
+  - OnEnter(PlayerTurn): ScoreManager.begin_turn(Player); TurnSM.set_controller(PlayerController); TurnSM.transition_to(AimPower)
+  - OnEnter(NpcTurn):    ScoreManager.begin_turn(NPC); TurnSM.set_controller(NpcController); TurnSM.transition_to(AimPower)
+  - Resolve: calls ScoreManager.update_after_turn(); emits TurnSM.turn_finished
+  - Controller API: _get_active_cap/active_cap, get_aim_dir/aim_dir, get_power/power, shoot()
+  - ScoreManager: tracks players[], scores{}, current_player, current_round
+  - PhysicsWatcher: tells when all caps stopped
+  - Caps: in group "caps", removed/registered via ScoreManager.register_knockout
+  - UI.Arrow shows aim_dir; UI.PowerBar shows power [0..1]
+  - TurnSM.turn_finished → handled by PlayerTurn/NpcTurn to switch MatchSM state
+
+io:
+  input: [mouse_left_drag_release]   # AimPower drag→direction, length→power
+  spawn: {scene: Cap.tscn, rows: 3, cols: 3, layers: 2}
+  aiming: {table_plane: basis.y, invert_aim: true}
