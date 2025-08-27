@@ -44,6 +44,7 @@ func start_charge() -> void:
 	set_process(true)
 	emit_signal("charge_started")
 	emit_signal("power_changed", power)
+	
 
 func cancel_charge() -> void:
 	_is_charging = false

@@ -193,9 +193,8 @@ script = ExtResource("13_36rkl")
 active_cap = NodePath("../PlayerSlamCap")
 camera_3d_path = NodePath("../Camera3D")
 
-[node name="NpcController" type="Node" parent="." node_paths=PackedStringArray("active_cap")]
+[node name="NpcController" type="Node" parent="."]
 script = ExtResource("14_fs0b5")
-active_cap = NodePath("../NpcSlamCap")
 
 [node name="PhysicsManager" type="Node" parent="."]
 script = ExtResource("15_ma7h6")
