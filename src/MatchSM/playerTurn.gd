@@ -12,7 +12,6 @@ var turn_sm: TurnSM
 var player_controller: Node
 var score: ScoreManager
 
-# Чтобы не ловить повторные коннекты, храним флаг
 var _connected_once := false
 
 func _ready() -> void:
@@ -64,5 +63,4 @@ func _exit() -> void:
 	_connected_once = false  # готовим флаг для следующего входа
 
 func _on_turn_finished() -> void:
-	# Ход игрока окончен — передаём управление NPC
 	emit_signal("request_transition", "NpcTurn")

@@ -11,6 +11,7 @@ func _enter(_data := {}) -> void:
 	_confirmed = false
 	if sm.controller and sm.controller.has_method("arm_to_start"):
 		sm.controller.arm_to_start()
+		# sm.controller.connect("charge_released", Callable(self, "_on_charge_released"))
 	if sm.controller is NpcController:
 		sm.controller.start_charge()
 
@@ -18,7 +19,7 @@ func _enter(_data := {}) -> void:
 	if "ui_power" in sm and sm.ui_power: sm.ui_power.visible = true
 
 
-	_update_ui()
+	# _update_ui()
 
 func _exit() -> void:
 	if sm.controller and sm.controller.has_method("cancel_charge"):
@@ -35,22 +36,6 @@ func _input_state(event: InputEvent) -> void:
 			sm.controller.shoot()
 			sm.transition_to("Shoot")
 	
-
-func _bind_signals(connect_now: bool) -> void:
-	if not sm.controller:
-		return
-	if connect_now and not _signals_bound:
-		if sm.controller.has_signal("shot_fired"):
-			sm.controller.shot_fired.connect(_on_shot_fired)
-		_signals_bound = true
-	elif not connect_now and _signals_bound:
-		if sm.controller.is_connected("shot_fired", _on_shot_fired):
-			sm.controller.shot_fired.disconnect(_on_shot_fired)
-		_signals_bound = false
-
-func _on_shot_fired(_impulse: Vector3) -> void:
-	sm.controller.shoot()
-	sm.transition_to("Shoot")
 
 # func _process_state(_delta: float) -> void:
 	# if _charging:
@@ -100,3 +85,8 @@ func _update_ui() -> void:
 	# # Полоска силы (если есть)
 	# if "ui_power" in sm and sm.ui_power and ("value" in sm.ui_power):
 	# 	sm.ui_power.value = p * 100.0
+
+
+func _on_npc_controller_shot_fired(_impulse: float) -> void:
+	sm.controller.shoot()
+	sm.transition_to("Shoot")

@@ -16,11 +16,12 @@ signal shot_fired(impulse: Vector3)
 @export var min_power: float = 0.1
 @export var max_power: float = 1.0
 
-var aim_dir: Vector3 = Vector3.FORWARD
+var aim_dir: Vector3 = Vector3.DOWN
 var power: float = 0.0
 var _dragging := false
 var _is_charging: bool = false
 var _charge_t: float = 0.0
+var _mouse_pos: Vector2 = Vector2.ZERO
 
 @onready var _cam: Camera3D = get_node_or_null(camera_3d_path)
 
@@ -32,8 +33,8 @@ func arm_to_start() -> void:
 	if active_cap == null: return
 	if active_cap.has_method("reset_to_start"):
 		active_cap.reset_to_start()
-	if active_cap.has_method("set_active"):
-		active_cap.set_active()
+	# if active_cap.has_method("set_active"):
+	# 	active_cap.set_active()
 
 func start_charge() -> void:
 	_dragging = false
@@ -45,10 +46,42 @@ func start_charge() -> void:
 	emit_signal("charge_started")
 	emit_signal("power_changed", power)
 	
+func drag_begin(screen_pos: Vector2) -> void:
+	# if active_cap.has_method("set_active"):
+	# 	active_cap.set_active()
+	_dragging = true
+	_mouse_pos = screen_pos
+	power = 0.0
+	emit_signal("charge_started")
+	emit_signal("power_changed", power)
+	# _update_aim_dir_from_mouse(screen_pos)
+
+func drag_update(screen_pos: Vector2) -> void:
+	if not _dragging: 
+		return
+	# _update_aim_dir_from_mouse(screen_pos)
+	var dist_px: float = _mouse_pos.distance_to(screen_pos)
+	# power = clampf(dist_px / POWER_PIXEL_MAX, 0.0, 1.0)
+	emit_signal("power_changed", power)
+
+
+func drag_release(screen_pos: Vector2) -> void:
+	if not _dragging:
+		return
+	_dragging = false
+	# _update_aim_dir_from_mouse(screen_pos)
+	# var dist_px: float = _drag_start_mouse.distance_to(screen_pos)
+	# power = clampf(dist_px / POWER_PIXEL_MAX, 0.0, 1.0)
+	emit_signal("power_changed", power)
+	emit_signal("charge_released", power)
+
 
 func cancel_charge() -> void:
 	_is_charging = false
+	_dragging = false
+	power = 0.0
 	set_process(false)
+	emit_signal("power_changed", power)
 
 func _process(delta: float) -> void:
 	if _is_charging:
@@ -85,6 +118,8 @@ func shoot() -> void:
 	var p := clampf(power, 0.0, 1.0)
 	var impulse_strength: float = lerp(min_impulse, max_impulse, p)
 	var impulse: Vector3 = aim_dir.normalized() * impulse_strength
+	active_cap.set_deferred("freeze", false)
+	await get_tree().process_frame
 
 	if active_cap:
 		active_cap.apply_impulse(impulse)

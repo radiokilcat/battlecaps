@@ -9,7 +9,7 @@ signal cap_stopped(result: Globals.DIR_POS, owner: int)
 @export var use_editor_start := true       # брать стартовую позу из того, как стоит в сцене
 @export var start_xform: Transform3D       # сюда можно руками сохранить позу (если use_editor_start=false)
 @export var lift_mm := 2.0                 # чуть приподнимем при ресете, чтобы не клипалось о стол
-@export var hide_when_inactive := true  # опционально: прятать неактивную битку
+@export var hide_when_inactive := false  # опционально: прятать неактивную битку
 
 
 var is_stopped = false
@@ -18,16 +18,16 @@ func set_active() -> void:
 	reset_to_start()
 	freeze = false
 	sleeping = false
-	if hide_when_inactive and (self is Node3D):
-		visible = true
+	# if hide_when_inactive and (self is Node3D):
+		# visible = true
 
 func set_inactive() -> void:
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 	freeze = true
 	sleeping = true
-	if hide_when_inactive and (self is Node3D):
-		visible = false
+	# if hide_when_inactive and (self is Node3D):
+		# visible = false
 
 
 func _ready() -> void:

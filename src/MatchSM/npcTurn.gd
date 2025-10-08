@@ -6,7 +6,6 @@ func _enter(_data = {}):
 	var turn_sm: Node = $"../../TurnSM"
 	turn_sm.set_process(true)
 	turn_sm.set_process_input(true)
-	turn_sm.call("set_controller", $"../../NpcController")
 	turn_sm.set_controller($"../../NpcController")
 	turn_sm.transition_to(turn_sm.start_state)
 	turn_sm.turn_finished.connect(_on_turn_finished, CONNECT_ONE_SHOT)

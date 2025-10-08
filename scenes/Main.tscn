@@ -204,6 +204,7 @@ script = ExtResource("16_e2s0e")
 
 [node name="PlayerSlamCap" parent="." instance=ExtResource("19_nfivy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+continuous_cd = true
 script = ExtResource("20_1nqs0")
 use_editor_start = true
 start_xform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -217,3 +218,5 @@ use_editor_start = true
 start_xform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 lift_mm = 2.0
 hide_when_inactive = true
+
+[connection signal="shot_fired" from="NpcController" to="TurnSM/Aim" method="_on_npc_controller_shot_fired"]

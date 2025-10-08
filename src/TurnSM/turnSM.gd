@@ -3,7 +3,6 @@ class_name TurnSM
 
 signal turn_finished        # эмитится из ResolveState, когда ход завершён
 
-## Контроллер текущего хода (PlayerController или NpcController)
 var controller: Node = null
 
 @export var arrow_path: NodePath            # UI/Arrow (Node3D или Control/Node2D)
