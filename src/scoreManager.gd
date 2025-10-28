@@ -9,7 +9,6 @@ signal round_changed(current_round: int)
 @export var target_score: int = 10
 @export var max_rounds: int = 0
 @export var points_per_knockout: int = 1
-
 @export var players: Array = ["Player", "NPC"]
 
 ## ====== current state ======
@@ -18,15 +17,13 @@ var current_player: StringName = &""    # which turn
 var current_round: int = 1
 var turn_count: int = 0
 
-## Накопители текущего хода
 var _pending_knockouts: int = 0
 var _pending_caps: Array = []
+
 
 func _ready() -> void:
 	_normalize_players()
 	_reset_scores()
-
-## --- Публичный API ---
 
 func start_match(new_players: Array = []) -> void:
 	if new_players.size() > 0:
@@ -52,15 +49,12 @@ func update_after_turn() -> bool:
 		push_warning("ScoreManager.update_after_turn(): current_player is not set. Call begin_turn().")
 		return false
 
-	# 1) Начисление очков
 	var gained := _pending_knockouts * points_per_knockout
 	scores[current_player] = int(scores.get(current_player, 0)) + gained
 
-	# 2) Сброс накопителей
 	_pending_knockouts = 0
 	_pending_caps.clear()
 
-	# 3) Ходы/раунды
 	turn_count += 1
 	if players.size() > 0 and players.find(current_player) == players.size() - 1:
 		current_round += 1
@@ -68,7 +62,6 @@ func update_after_turn() -> bool:
 
 	_emit_score_changed()
 
-	# 4) Проверка победителя
 	if is_game_over():
 		game_over.emit(winner_id())
 		return true
@@ -103,18 +96,14 @@ func winner_id() -> String:
 		return "" if tie else String(best_p)
 	return ""
 
-## Удобные геттеры
 func get_score(player_id) -> int:
 	return int(scores.get(_sn(player_id), 0))
 
 func get_scores() -> Dictionary:
-	# возвращаем копию (ключи останутся StringName — это ок)
 	return scores.duplicate(true)
 
 func get_round() -> int:
 	return current_round
-
-## --- Вспомогательное ---
 
 func _reset_scores() -> void:
 	scores.clear()

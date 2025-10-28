@@ -60,22 +60,15 @@ func _enter(_data := {}) -> void:
 		turn_sm.set_process(false)
 		turn_sm.set_process_input(false)
 
-	# Подготовка поля
 	stack_caps() if clear_board_on_start else null
-
-	# Сброс позиции битки
 	_reset_active_cap() if reset_active_cap_pose and active_cap else null
-
-	# Старт матча
 	score.start_match([player_id, npc_id]) if score and score.has_method("start_match") else push_warning(
-		"InitState: ScoreManager не найден или без метода start_match()."
+		"InitState: ScoreManager is not found or start_match() don't exist."
 	)
 
-	# Привязка битки к контроллерам
 	player_controller.active_cap = active_cap if player_controller and "active_cap" in player_controller else null
 	npc_controller.active_cap    = active_cap if npc_controller and "active_cap" in npc_controller else null
 
-	# Переход к первому ходу
 	emit_signal("request_transition", "PlayerTurn")
 
 

@@ -44,6 +44,7 @@ func _enter(_data := {}) -> void:
 	turn_sm.set_process_input(true)
 	turn_sm.set_controller(player_controller)
 	turn_sm.transition_to(turn_sm.start_state)
+	turn_sm.controller.active_cap = $"../../PlayerSlamCap"
 
 	if not _connected_once and turn_sm.has_signal("turn_finished"):
 		turn_sm.turn_finished.connect(_on_turn_finished, CONNECT_ONE_SHOT)

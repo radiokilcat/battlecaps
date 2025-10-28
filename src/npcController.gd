@@ -63,6 +63,7 @@ func _process(delta: float) -> void:
 		_update_aim_dir_from_target()
 
 	if _charge_t >= _shoot_at_time:
+		_is_charging = false
 		emit_signal("shot_fired", Vector3.ZERO)
 
 func shoot() -> void:
@@ -79,15 +80,11 @@ func shoot() -> void:
 	active_cap.set_deferred("freeze", false)
 	await get_tree().process_frame
 
-
-	if active_cap and dir != Vector3.ZERO:
+	if active_cap:
 		var impulse := dir.normalized() * impulse_strength
 		active_cap.apply_impulse(impulse)
 		emit_signal("charge_released", p)
-		emit_signal("shot_fired", impulse)
-	else:
-		emit_signal("charge_released", p)
-		emit_signal("shot_fired", Vector3.ZERO)
+		# emit_signal("shot_fired", impulse)
 
 
 func set_target_point(point: Vector3) -> void:

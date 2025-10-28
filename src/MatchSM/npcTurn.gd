@@ -9,6 +9,7 @@ func _enter(_data = {}):
 	turn_sm.set_controller($"../../NpcController")
 	turn_sm.transition_to(turn_sm.start_state)
 	turn_sm.turn_finished.connect(_on_turn_finished, CONNECT_ONE_SHOT)
+	turn_sm.controller.active_cap = $"../../NpcSlamCap"
 
 func _exit():
 	var turn_sm: Node = $"../../TurnSM"

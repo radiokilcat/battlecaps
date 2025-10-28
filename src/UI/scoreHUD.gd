@@ -19,7 +19,6 @@ func _on_round_changed(_round: int) -> void:
 	_refresh()
 
 func _on_game_over(winner_id: String) -> void:
-	# можно подсветить или показать финальный текст
 	text = "%s\nWinner: %s" % [text, ("Tie" if winner_id == "" else winner_id)]
 
 func _refresh() -> void:
@@ -28,7 +27,6 @@ func _refresh() -> void:
 	var scores: Dictionary = score_manager.get_scores()
 	var players: Array = score_manager.players if "players" in score_manager else scores.keys()
 
-	# ищем максимум
 	var best := -INF
 	for p in players:
 		best = max(best, int(scores.get(p, 0)))
