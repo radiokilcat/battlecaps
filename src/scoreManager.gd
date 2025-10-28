@@ -5,23 +5,22 @@ signal score_changed(scores: Dictionary)
 signal game_over(winner_id: String)
 signal round_changed(current_round: int)
 
-## ====== Настройки матча ======
+## ====== match settings ======
 @export var target_score: int = 10
 @export var max_rounds: int = 0
 @export var points_per_knockout: int = 1
 
-## ====== Состав игроков (без строгого Array[String]) ======
-@export var players: Array = ["Player", "NPC"]  # нормализуем внутри
+@export var players: Array = ["Player", "NPC"]
 
-## ====== Текущее состояние ======
-var scores: Dictionary = {}             # ключи: StringName → int
-var current_player: StringName = &""    # чей ход
+## ====== current state ======
+var scores: Dictionary = {}             # StringName → int
+var current_player: StringName = &""    # which turn
 var current_round: int = 1
 var turn_count: int = 0
 
 ## Накопители текущего хода
 var _pending_knockouts: int = 0
-var _pending_caps: Array = []           # Array[Node], оставим гибким
+var _pending_caps: Array = []
 
 func _ready() -> void:
 	_normalize_players()
@@ -50,7 +49,7 @@ func register_knockout(cap: Node) -> void:
 
 func update_after_turn() -> bool:
 	if current_player == &"":
-		push_warning("ScoreManager.update_after_turn(): current_player не установлен. Вызовите begin_turn().")
+		push_warning("ScoreManager.update_after_turn(): current_player is not set. Call begin_turn().")
 		return false
 
 	# 1) Начисление очков

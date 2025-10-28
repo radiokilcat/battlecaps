@@ -11,13 +11,17 @@ config_version=5
 [application]
 
 config/name="Battlecaps"
-run/main_scene="uid://gxm4bjrw15kx"
+run/main_scene="uid://dpl8yhmhvnfw7"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Globals="*res://src/globals.gd"
+
+[global_group]
+
+caps=""
 
 [physics]
 

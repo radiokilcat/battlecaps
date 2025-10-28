@@ -1,6 +1,6 @@
 extends RichTextLabel
 
-@export var score_manager: Node  # перетащи сюда ScoreManager из сцены
+@export var score_manager: Node
 
 func _ready():
 	if score_manager:
@@ -36,7 +36,7 @@ func _refresh() -> void:
 	var parts: Array[String] = []
 	for p in players:
 		var s := int(scores.get(p, 0))
-		var name := "[b]%s[/b]" % p if s == best else str(p)
+		var name := "%s" % p if s == best else str(p)
 		parts.append("%s: %d" % [name, s])
 
 	text = "Round %d — %s" % [round_num, " | ".join(parts)]
