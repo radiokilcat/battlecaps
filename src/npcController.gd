@@ -19,14 +19,15 @@ signal shot_fired(impulse: Vector3)
 # Авто-обновление aim_dir на лету, если задана цель/нода
 @export var keep_aim_updated: bool = true
 
-var active_cap: RigidBody3D
-var aim_dir: Vector3 = Vector3.ZERO
-var power: float = 0.0					# [0..1], единый источник правды
+@export var active_cap: RigidBody3D
+
+var aim_dir: Vector3 = Vector3.DOWN
+var power: float = 0.0
 
 var _is_charging: bool = false
 var _charge_t: float = 0.0
 var _total_charge_time: float = 1.0
-var _shoot_at_time: float = 0.7			# момент авто-выстрела (сек) в рамках текущего цикла зарядки
+var _shoot_at_time: float = 0.7
 
 var _target_point: Vector3 = Vector3.ZERO
 var _target_node: Node3D = null
@@ -50,10 +51,6 @@ func start_charge() -> void:
 	emit_signal("charge_started")
 	emit_signal("power_changed", power)
 
-func cancel_charge() -> void:
-	_is_charging = false
-	set_process(false)
-
 func _process(delta: float) -> void:
 	if not _is_charging:
 		return
@@ -66,13 +63,9 @@ func _process(delta: float) -> void:
 		_update_aim_dir_from_target()
 
 	if _charge_t >= _shoot_at_time:
-		cancel_charge()
-		emit_signal("shot_fired", power)
+		emit_signal("shot_fired", Vector3.ZERO)
 
-# Контракт: применяет импульс исходя из текущих aim_dir и power
 func shoot() -> void:
-	if not _is_charging:
-		return
 	_is_charging = false
 	set_process(false)
 
@@ -80,11 +73,12 @@ func shoot() -> void:
 	var impulse_strength: float = lerp(min_impulse, max_impulse, p)
 
 	var dir := aim_dir
-	if dir == Vector3.ZERO:
+	if dir == Vector3.DOWN:
 		_update_aim_dir_from_target()
 		dir = aim_dir
 	active_cap.set_deferred("freeze", false)
 	await get_tree().process_frame
+
 
 	if active_cap and dir != Vector3.ZERO:
 		var impulse := dir.normalized() * impulse_strength

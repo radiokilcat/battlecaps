@@ -1,6 +1,6 @@
 extends RichTextLabel
 
-@export var score_manager: Node  # перетащи сюда ScoreManager из сцены
+@export var score_manager: Node
 
 func _ready():
 	if score_manager:

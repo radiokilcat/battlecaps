@@ -52,14 +52,6 @@ func _input_state(event: InputEvent) -> void:
 			sm.transition_to("Shoot")
 	
 
-# func _process_state(_delta: float) -> void:
-	# if _charging:
-	# 	_charge_t = clampf(_charge_t + delta, 0.0, max_charge_time)
-	# 	var power := _charge_t / max_charge_time
-	# 	_emit_power_ui(power)
-	# 	_update_aim_dir()
-	# _update_ui()
-
 func _active_cap() -> Node:
 	if sm.controller and sm.controller.has_method("_get_active_cap"):
 		return sm.controller._get_active_cap()
@@ -102,6 +94,6 @@ func _update_ui() -> void:
 	# 	sm.ui_power.value = p * 100.0
 
 
-func _on_npc_controller_shot_fired(_impulse: float) -> void:
+func _on_npc_controller_shot_fired(impulse: Vector3) -> void:
 	sm.controller.shoot()
 	sm.transition_to("Shoot")

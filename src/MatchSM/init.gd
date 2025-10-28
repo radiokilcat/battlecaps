@@ -43,6 +43,7 @@ func stack_caps():
 		cap_instance.position = start_position + vertical_offset + horizontal_offset
 
 		cap_instance.rotation_degrees.y = rng.randf_range(-10, 10)
+		
 		caps_container.add_child(cap_instance)
 
 func _reset_active_cap() -> void:
