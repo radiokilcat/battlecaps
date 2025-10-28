@@ -9,6 +9,8 @@ var controller: Node = null
 @export var power_path: NodePath            # UI/PowerBar (Control)
 @export var physics_watcher_path: NodePath  # узел с методами start_watch()/all_caps_stopped()
 
+@onready var _aim_power: AimPower = $Aim
+
 @onready var ui_arrow: Node = (
 	get_node_or_null(arrow_path) if arrow_path != NodePath("")
 	else get_node_or_null("../UI/Arrow")
@@ -23,10 +25,6 @@ var controller: Node = null
 	get_node_or_null(physics_watcher_path) if physics_watcher_path != NodePath("")
 	else get_node_or_null("../PhysicsWatcher")
 )
-
-func _ready() -> void:
-	add_to_group("turn_sm")     # для удобного поиска из PlayerTurn/NpcTurn
-	super._ready()
 
 # -------------------- ПУБЛИЧНЫЙ API --------------------
 
@@ -60,6 +58,35 @@ func all_caps_stopped() -> bool:
 
 func force_finish_turn() -> void:
 	emit_signal("turn_finished")
+
+
+func _ready() -> void:
+	add_to_group("turn_sm")
+	super._ready()
+	_connect_state_signals()
+
+func _connect_state_signals() -> void:
+	_aim_power.charge_started.connect(_on_charge_started)
+	_aim_power.charge_changed.connect(_on_charge_changed)
+	_aim_power.charge_released.connect(_on_charge_released)
+	_aim_power.charge_canceled.connect(_on_charge_canceled)
+
+# сигналы от AimPower
+func _on_charge_started() -> void:
+	print("начали заряд")
+	# например: UI/PowerBar.show()
+
+func _on_charge_changed(power: float) -> void:
+	print("заряд:", power)
+	# UI/PowerBar.set_value(power)
+
+func _on_charge_released(power: float) -> void:
+	print("заряд отпущен:", power)
+	# здесь можешь сразу вызвать transition_to("Shoot"), если хочешь делать переход извне
+
+func _on_charge_canceled() -> void:
+	print("заряд отменён")
+	# UI/PowerBar.hide()
 
 # -------------------- Утилиты для стрелки (необязательно) --------------------
 

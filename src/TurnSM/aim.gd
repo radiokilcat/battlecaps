@@ -1,11 +1,26 @@
+class_name AimPower
 extends StateBase
 
+signal charge_started
+signal charge_changed(power: float)
+signal charge_released(power: float)
+signal charge_canceled
+
+
+
+@export var charge_time: float = 1.2	# Сколько секунд до полного заряда (1.0)
+@export var use_curve: bool = false		# Включить кривую (например, быстрый старт)
+@export var charge_curve: Curve			# По желанию — назначь кривую в инспекторе
 @export var max_drag: float = 3.0        # расстояние в мировых единицах, соответствующее 100% силы
 @export var min_power: float = 0.1       # нижняя граница, чтобы не было нулевых тычков
 @export var max_power: float = 1.0
 
 var _confirmed := false
 var _signals_bound := false
+var _charging: bool = false
+var _t: float = 0.0						# Накопленное время [0..charge_time]
+var _power: float = 0.0					# Текущий заряд [0..1]
+var _controller: Node = null			# Ссылка от TurnSM
 
 func _enter(_data := {}) -> void:
 	_confirmed = false
@@ -57,7 +72,7 @@ func _aim_dir() -> Vector3:
 		sm.controller.aim_dir if ("aim_dir" in sm.controller) else Vector3.FORWARD
 	)
 
-func _power() -> float:
+func power() -> float:
 	return sm.controller.get_power() if sm.controller and sm.controller.has_method("get_power") else (
 		sm.controller.power if ("power" in sm.controller) else 0.0
 	)

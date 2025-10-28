@@ -1,3 +1,4 @@
+# extends BaseController
 extends Node
 class_name NpcController
 
@@ -82,6 +83,8 @@ func shoot() -> void:
 	if dir == Vector3.ZERO:
 		_update_aim_dir_from_target()
 		dir = aim_dir
+	active_cap.set_deferred("freeze", false)
+	await get_tree().process_frame
 
 	if active_cap and dir != Vector3.ZERO:
 		var impulse := dir.normalized() * impulse_strength
@@ -109,3 +112,6 @@ func _update_aim_dir_from_target() -> void:
 	var to := (tgt - active_cap.global_position).project(Vector3(1, 0, 1))
 	if to.length() > 0.001:
 		aim_dir = to.normalized()
+
+func get_power() -> float: return 0.0
+func get_aim_dir() -> Vector3: return Vector3.FORWARD

@@ -173,6 +173,7 @@ script = ExtResource("7_1nqs0")
 [node name="TurnSM" type="Node" parent="."]
 script = ExtResource("8_1iba3")
 arrow_path = NodePath("../TrajectoryPath")
+power_path = null
 physics_watcher_path = NodePath("../PhysicsManager")
 start_state = "Aim"
 
@@ -181,6 +182,9 @@ script = ExtResource("9_yxlcp")
 
 [node name="Aim" type="Node" parent="TurnSM"]
 script = ExtResource("10_ebg2g")
+max_drag = null
+min_power = null
+max_power = null
 
 [node name="Shoot" type="Node" parent="TurnSM"]
 script = ExtResource("11_2ofn6")
@@ -204,7 +208,6 @@ script = ExtResource("16_e2s0e")
 
 [node name="PlayerSlamCap" parent="." instance=ExtResource("19_nfivy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-continuous_cd = true
 script = ExtResource("20_1nqs0")
 use_editor_start = true
 start_xform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

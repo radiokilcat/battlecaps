@@ -1,5 +1,6 @@
-# PlayerController.gd
+# extends BaseController
 extends Node
+class_name PlayerController
 
 signal power_changed(value: float)
 signal charge_started()
@@ -64,7 +65,6 @@ func drag_update(screen_pos: Vector2) -> void:
 	# power = clampf(dist_px / POWER_PIXEL_MAX, 0.0, 1.0)
 	emit_signal("power_changed", power)
 
-
 func drag_release(screen_pos: Vector2) -> void:
 	if not _dragging:
 		return
@@ -74,7 +74,6 @@ func drag_release(screen_pos: Vector2) -> void:
 	# power = clampf(dist_px / POWER_PIXEL_MAX, 0.0, 1.0)
 	emit_signal("power_changed", power)
 	emit_signal("charge_released", power)
-
 
 func cancel_charge() -> void:
 	_is_charging = false
@@ -117,7 +116,7 @@ func shoot() -> void:
 
 	var p := clampf(power, 0.0, 1.0)
 	var impulse_strength: float = lerp(min_impulse, max_impulse, p)
-	var impulse: Vector3 = aim_dir.normalized() * impulse_strength
+	var impulse: Vector3 = aim_dir.normalized() * impulse_strength * 5
 	active_cap.set_deferred("freeze", false)
 	await get_tree().process_frame
 
