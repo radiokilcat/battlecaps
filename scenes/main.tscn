@@ -202,7 +202,6 @@ active_cap = NodePath("../NpcSlamCap")
 
 [node name="ScoreManager" type="Node" parent="."]
 script = ExtResource("16_e2s0e")
-caps_container_path = NodePath("../CapsStack")
 
 [node name="PlayerSlamCap" parent="." instance=ExtResource("19_nfivy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)

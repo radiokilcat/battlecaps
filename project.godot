@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Battlecaps"
-run/main_scene="uid://dpl8yhmhvnfw7"
+run/main_scene="uid://i5vjdndt01en"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
