@@ -1,9 +1,11 @@
 extends StateBase
 
 func _enter(_data = {}):
-	sm.physics_watcher.call("start_watch")
+	var watcher: PhysicsWatcher = sm.physics_watcher
+	if watcher:
+		watcher.start_watch()
 
 func _process_state(_delta):
-	
-	if sm.physics_watcher.call("all_caps_stopped"):
+	var watcher: PhysicsWatcher = sm.physics_watcher
+	if watcher and watcher.all_caps_stopped():
 		emit_signal("request_transition", "Resolve")

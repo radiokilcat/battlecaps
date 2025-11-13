@@ -1,5 +1,5 @@
 # extends BaseController
-extends Node
+extends BaseController
 class_name NpcController
 
 signal power_changed(value: float)
@@ -66,6 +66,15 @@ func _process(delta: float) -> void:
 		_is_charging = false
 		emit_signal("shot_fired", Vector3.ZERO)
 
+func get_active_cap() -> RigidBody3D:
+	return active_cap
+
+func get_aim_dir() -> Vector3:
+	return aim_dir
+
+func get_power() -> float:
+	return power
+
 func shoot() -> void:
 	_is_charging = false
 	set_process(false)
@@ -103,6 +112,3 @@ func _update_aim_dir_from_target() -> void:
 	var to := (tgt - active_cap.global_position).project(Vector3(1, 0, 1))
 	if to.length() > 0.001:
 		aim_dir = to.normalized()
-
-func get_power() -> float: return 0.0
-func get_aim_dir() -> Vector3: return Vector3.FORWARD

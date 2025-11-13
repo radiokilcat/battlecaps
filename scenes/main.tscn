@@ -181,9 +181,6 @@ script = ExtResource("9_yxlcp")
 
 [node name="Aim" type="Node" parent="TurnSM"]
 script = ExtResource("10_ebg2g")
-max_drag = null
-min_power = null
-max_power = null
 
 [node name="Shoot" type="Node" parent="TurnSM"]
 script = ExtResource("11_2ofn6")

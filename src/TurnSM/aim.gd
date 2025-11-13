@@ -20,13 +20,10 @@ var _signals_bound := false
 var _charging: bool = false
 var _t: float = 0.0						# Накопленное время [0..charge_time]
 var _power: float = 0.0					# Текущий заряд [0..1]
-var _controller: Node = null			# Ссылка от TurnSM
-
 func _enter(_data := {}) -> void:
 	_confirmed = false
-	if sm.controller and sm.controller.has_method("arm_to_start"):
+	if sm.controller:
 		sm.controller.arm_to_start()
-		# sm.controller.connect("charge_released", Callable(self, "_on_charge_released"))
 	if sm.controller is NpcController:
 		sm.controller.start_charge()
 
@@ -37,7 +34,7 @@ func _enter(_data := {}) -> void:
 	# _update_ui()
 
 func _exit() -> void:
-	if sm.controller and sm.controller.has_method("cancel_charge"):
+	if sm.controller:
 		sm.controller.cancel_charge()
 	pass
 
@@ -48,26 +45,17 @@ func _input_state(event: InputEvent) -> void:
 		if event.pressed:
 			sm.controller.start_charge()
 		else:
-			sm.controller.shoot()
 			sm.transition_to("Shoot")
 	
 
 func _active_cap() -> Node:
-	if sm.controller and sm.controller.has_method("_get_active_cap"):
-		return sm.controller._get_active_cap()
-	elif sm.controller and "active_cap" in sm.controller:
-		return sm.controller.active_cap
-	return null
+	return sm.controller.get_active_cap() if sm.controller else null
 
 func _aim_dir() -> Vector3:
-	return sm.controller.get_aim_dir() if sm.controller and sm.controller.has_method("get_aim_dir") else (
-		sm.controller.aim_dir if ("aim_dir" in sm.controller) else Vector3.FORWARD
-	)
+	return sm.controller.get_aim_dir() if sm.controller else Vector3.FORWARD
 
 func power() -> float:
-	return sm.controller.get_power() if sm.controller and sm.controller.has_method("get_power") else (
-		sm.controller.power if ("power" in sm.controller) else 0.0
-	)
+	return sm.controller.get_power() if sm.controller else 0.0
 
 func _update_ui() -> void:
 	var cap := _active_cap()
@@ -95,5 +83,4 @@ func _update_ui() -> void:
 
 
 func _on_npc_controller_shot_fired(impulse: Vector3) -> void:
-	sm.controller.shoot()
 	sm.transition_to("Shoot")

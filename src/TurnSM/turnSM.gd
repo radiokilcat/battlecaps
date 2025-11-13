@@ -3,7 +3,7 @@ class_name TurnSM
 
 signal turn_finished        # эмитится из ResolveState, когда ход завершён
 
-var controller: Node = null
+var controller: BaseController = null
 
 @export var arrow_path: NodePath            # UI/Arrow (Node3D или Control/Node2D)
 @export var power_path: NodePath            # UI/PowerBar (Control)
@@ -21,15 +21,15 @@ var controller: Node = null
 	else get_node_or_null("../UI/PowerBar")
 )
 
-@onready var physics_watcher: Node = (
-	get_node_or_null(physics_watcher_path) if physics_watcher_path != NodePath("")
-	else get_node_or_null("../PhysicsWatcher")
+@onready var physics_watcher: PhysicsWatcher = (
+	(get_node_or_null(physics_watcher_path) as PhysicsWatcher) if physics_watcher_path != NodePath("")
+	else (get_node_or_null("../PhysicsWatcher") as PhysicsWatcher)
 )
 
 # -------------------- ПУБЛИЧНЫЙ API --------------------
 
 ## Назначить контроллер (вызывается из PlayerTurn/NpcTurn)
-func set_controller(c: Node) -> void:
+func set_controller(c: BaseController) -> void:
 	controller = c
 
 ## Показать/спрятать стрелку
@@ -49,12 +49,13 @@ func show_power(v: bool) -> void:
 		ui_power.visible = v
 
 func start_watch() -> void:
-	if physics_watcher and physics_watcher.has_method("start_watch"):
+	if physics_watcher:
 		physics_watcher.start_watch()
 
 func all_caps_stopped() -> bool:
-	return physics_watcher and physics_watcher.has_method("all_caps_stopped") \
-		and physics_watcher.all_caps_stopped()
+	if physics_watcher:
+		return physics_watcher.all_caps_stopped()
+	return false
 
 func force_finish_turn() -> void:
 	emit_signal("turn_finished")

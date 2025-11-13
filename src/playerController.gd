@@ -1,5 +1,5 @@
 # extends BaseController
-extends Node
+extends BaseController
 class_name PlayerController
 
 signal power_changed(value: float)
@@ -26,7 +26,7 @@ var _mouse_pos: Vector2 = Vector2.ZERO
 
 @onready var _cam: Camera3D = get_node_or_null(camera_3d_path)
 
-func _get_active_cap() -> RigidBody3D: return active_cap
+func get_active_cap() -> RigidBody3D: return active_cap
 func get_aim_dir() -> Vector3: return aim_dir
 func get_power() -> float: return power
 
